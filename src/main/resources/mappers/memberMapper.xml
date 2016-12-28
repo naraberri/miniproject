@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.naraberri.dao.MemberMapper">
+
+	<sql id="search">
+		<if test="sType != null">
+			<if test="stype eq 'o'.toString">
+				order by mno desc
+			</if>
+
+			<if test="stype eq 'i'.toString()">
+				where userid like #{keyword}
+				order by userid desc
+			</if>
+
+			<if test="stype eq 'n'.toString()">
+				where username like #{keyword}
+				order by username desc
+			</if>
+
+			<if test="stype eq 'e'.toString()">
+				where email like #{keyword}
+				order by email desc
+			</if>
+
+			<if test="stype eq 'j'.toString()">
+				where joindate like #{keyword}
+				order by joindate desc
+			</if>
+
+			<if test="stype eq 'm'.toString()">
+				where mno like #{keyword}
+				order by mno desc
+			</if>
+		</if>
+	</sql>
+
+	<sql id="sort">
+		<if test="sType != null">
+			<if test="stype eq 'o'.toString">
+				order by mno desc limit #{num}, 10
+			</if>
+			<if test="sType eq 'i'.toString()">
+				order by userid desc limit #{num}, 10
+			</if>
+			<if test="sType eq 'n'.toString()">
+				order by username desc limit #{num}, 10
+			</if>
+			<if test="stype eq 'e'.toString()">
+				order by email desc limit #{num}, 10
+			</if>
+			<if test="stype eq 'j'.toString()">
+				order by joindate desc limit #{num}, 10
+			</if>
+			<if test="sType eq 'm'.toString()">
+				order by mno desc limit #{num}, 10
+			</if>
+		</if>
+	</sql>
+
+	<insert id="create" parameterType="MemberVO">
+		insert into tbl_member
+		(userid,userpw,username,email,fileupload)
+		values(#{userid},#{userpw},#{username},#{email},#{fileupload})
+	</insert>
+
+	<select id="read" resultType="MemberVO">
+		select * from tbl_member where mno
+		= #{mno}
+	</select>
+
+	<update id="update" parameterType="MemberVO">
+		update tbl_member set
+		fileupload=#{fileupload},
+		userpw=#{userpw},
+		username=#{username},
+		email=#{email} where mno =
+		#{mno}
+	</update>
+
+	<delete id="delete" parameterType="MemberVO">
+		delete from
+		tbl_member where
+		mno=#{mno}
+	</delete>
+
+	<select id="Page" resultType="MemberVO">
+
+		select
+		*
+		from
+		tbl_member
+		order by
+		mno
+		desc
+		limit #{page}, 10
+
+	</select>
+
+	<select id="listSearch" resultType="MemberVO">
+		select * from tbl_member
+
+		<include refid="search"></include>
+
+
+		limit #{num}, 10
+	</select>
+
+	<select id="sortCondition" resultType="MemberVO">
+		SELECT * FROM tbl_member
+		<include refid="sort"></include>
+
+	</select>
+
+	<select id="count" resultType="java.lang.Integer">
+		select count(*) from tbl_member
+	</select>
+
+	<select id="countSearch" resultType="java.lang.Integer">
+		select count(*) from tbl_member
+		<include refid="search"></include>
+	</select>
+
+	<select id='login' parameterType="MemberVO" resultType='String'>
+		select
+		userid from
+		tbl_member where
+		userid=#{userid} and
+		userpw=#{userpw}
+	</select>
+
+
+</mapper>
+
+
+
